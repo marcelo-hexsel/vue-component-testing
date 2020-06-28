@@ -57,4 +57,10 @@ describe("OpcaoVotacao", () => {
       expect(component.vm.vote).toHaveBeenCalled();
     });
   });
+
+  describe("snapshot", () => {
+    it("should look like snapshot", () => {
+      expect(component.element).toMatchSnapshot();
+    });
+  });
 });
