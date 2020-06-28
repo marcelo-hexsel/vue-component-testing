@@ -3,7 +3,11 @@
     <div class="item-image">
       <img :src="imageUrl" />
     </div>
-    <button class="btn btn btn-secondary item-button" @click="vote()">
+    <button
+      :disabled="!enabled"
+      class="btn btn btn-secondary item-button"
+      @click="vote()"
+    >
       {{ name }}
     </button>
     <div class="item-percentual">{{ percentual }} ({{ voteCount }} votos)</div>
@@ -13,11 +17,12 @@
 <script>
 export default {
   props: {
-    option: Number,
+    option: String,
     name: String,
     imageUrl: String,
     percentual: String,
     voteCount: Number,
+    enabled: Boolean,
   },
   methods: {
     vote() {
