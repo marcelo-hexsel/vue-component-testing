@@ -34,4 +34,18 @@ describe("Votacao", () => {
       });
     });
   });
+
+  describe("snapshot", () => {
+    it("should look like shallow snapshot", () => {
+      let component = shallowMount(Votacao);
+
+      expect(component.element).toMatchSnapshot("VotacaoShallow");
+    });
+
+    it("should look like full snapshot", () => {
+      let component = mount(Votacao);
+
+      expect(component.element).toMatchSnapshot("VotacaoFull");
+    });
+  });
 });
