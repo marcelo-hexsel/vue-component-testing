@@ -106,6 +106,11 @@ export default {
       }
     },
   },
+  computed: {
+    winnerNumberOfVotes(){
+      return "O vencedor tem "+Math.max(this.votes1, this.votes2, this.votes3)+" votos."
+    }
+  }
 };
 </script>
 
