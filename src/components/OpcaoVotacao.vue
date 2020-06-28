@@ -21,7 +21,9 @@ export default {
   },
   methods: {
     vote() {
-      this.$emit("voted");
+      this.$emit("voted", {
+        option: this.option,
+      });
     },
   },
 };
