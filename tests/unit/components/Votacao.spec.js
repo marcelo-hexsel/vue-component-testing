@@ -71,6 +71,14 @@ describe("Votacao", () => {
         const result = component.vm.percentual(component.vm.option1)
         // Then
         expect(result).toBe("0%");
+      }),
+      it('Should return 0% when catch error', () => {
+        component.setData({
+          totalVotes: null,
+          option1: null
+        })
+        const result = component.vm.percentual(component.vm.option1)
+        expect(result).toBe("0%");
       })
     })
   })
@@ -96,7 +104,7 @@ describe("Votacao", () => {
         })
 
         // Then
-        const expected = {"code": "1", "image": "xaéxaé", "name": "Playstation 4", "votes": 5}
+        const expected = { "code": "1", "image": "xaéxaé", "name": "Playstation 4", "votes": 5 }
         expect(component.vm.winner).toStrictEqual(expected);
       });
     });
@@ -132,6 +140,19 @@ describe("Votacao", () => {
         //THEN
         expect(component.vm.openVoting).toBe(false);
       });
+    });
+  });
+
+  describe("template", () => {
+    // Given
+    let component = mount(Votacao);
+
+    it("should display total votes", async () => {
+      // When
+      component.get(".item-button").trigger("click")
+      await component.vm.$nextTick;
+      // Then
+      expect(component.get(".result").text()).toBe("Total de votos: 1");
     });
   });
 

@@ -102,7 +102,6 @@ export default {
         if (Number.isNaN(percentual) || this.totalVotes == 0) return "0%";
         return percentual.toFixed(2) + "%";
       } catch (err) {
-        console.log("Dividido por zero")
         return "0%";
       }
     }
