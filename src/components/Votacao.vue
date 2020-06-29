@@ -99,16 +99,12 @@ export default {
     percentual(option) {
       try {
         let percentual = (option.votes * 100) / this.totalVotes;
-        if (Number.isNaN(percentual)) return "0%";
+        if (Number.isNaN(percentual) || this.totalVotes == 0) return "0%";
         return percentual.toFixed(2) + "%";
       } catch (err) {
+        console.log("Dividido por zero")
         return "0%";
       }
-    },
-  },
-  computed: {
-    winnerNumberOfVotes(){
-      return "O vencedor tem "+Math.max(this.votes1, this.votes2, this.votes3)+" votos."
     }
   }
 };
