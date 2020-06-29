@@ -46,7 +46,7 @@ describe("OpcaoVotacao", () => {
       expect(component.get(".item-percentual").text()).toBe("33.78 (5 votos)");
     });
 
-    it("should call vote on item-button click", () => {
+    it("should call vote on item-button click (USING MOCK)", () => {
       //GIVEN
       //Substituindo um método do componente por um mock
       component.vm.vote = jest.fn();
@@ -56,6 +56,21 @@ describe("OpcaoVotacao", () => {
 
       //THEN
       expect(component.vm.vote).toHaveBeenCalled();
+      expect(component.emitted().voted).toBeFalsy();
+    });
+
+    it("should call vote on item-button click (USING SPY)", () => {
+      //GIVEN
+      //Substituindo um método do componente por um spy
+      jest.spyOn(component.vm, "vote");
+
+      //WHEN
+      component.get(".item-button").trigger("click");
+
+      //THEN
+      expect(component.vm.vote).toHaveBeenCalled();
+      expect(component.emitted().voted).toBeTruthy();
+      expect(component.emitted().voted[0]).toEqual([{ option: "6" }]);
     });
   });
 

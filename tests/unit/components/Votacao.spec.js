@@ -1,8 +1,19 @@
 import { shallowMount, mount } from "@vue/test-utils";
 import Votacao from "@/components/Votacao.vue";
 
-describe("Votacao", () => {
+jest.mock("axios", () => {
+  return {
+    get: () => {
+      return new Promise((resolve) => {
+        resolve({
+          data: { sprites: { front_default: "pokemon_image" } },
+        });
+      });
+    },
+  };
+});
 
+describe("Votacao", () => {
   describe("data", () => {
     let component = shallowMount(Votacao);
 
@@ -10,7 +21,7 @@ describe("Votacao", () => {
       expect(component.vm.totalVotes).toBe(0);
       expect(component.vm.openVoting).toBeTruthy();
     });
-  })
+  });
 
   describe("methods", () => {
     let component = shallowMount(Votacao);
@@ -18,70 +29,80 @@ describe("Votacao", () => {
     describe("vote", () => {
       it("Should add votes", () => {
         // Given
-        let ev = { option: "1" }
+        let ev = { option: "1" };
         component.setData({
           totalVotes: 0,
           option1: {
-            votes: 0
-          }
-        })
+            votes: 0,
+          },
+        });
         // When
-        component.vm.vote(ev)
+        component.vm.vote(ev);
         // Then
         expect(component.vm.totalVotes).toBe(1);
         expect(component.vm.option1.votes).toBe(1);
-      })
-    })
+      });
+    });
     describe("percentual", () => {
       it("Should return percentual", () => {
         // Given
         component.setData({
           totalVotes: 2,
           option1: {
-            votes: 1
-          }
-        })
+            votes: 1,
+          },
+        });
         // When
-        const result = component.vm.percentual(component.vm.option1)
+        const result = component.vm.percentual(component.vm.option1);
         // Then
         expect(result).toBe("50.00%");
-      })
+      });
       it("Should return 0% when error", () => {
         // Given
         component.setData({
           totalVotes: 2,
           option1: {
-            votes: "a"
-          }
-        })
+            votes: "a",
+          },
+        });
         // When
-        const result = component.vm.percentual(component.vm.option1)
+        const result = component.vm.percentual(component.vm.option1);
         // Then
         expect(result).toBe("0%");
-      })
+      });
       it("Should return 0% when divided by zero", () => {
         // Given
         component.setData({
           totalVotes: 0,
           option1: {
-            votes: 2
-          }
-        })
+            votes: 2,
+          },
+        });
         // When
-        const result = component.vm.percentual(component.vm.option1)
+        const result = component.vm.percentual(component.vm.option1);
         // Then
         expect(result).toBe("0%");
       }),
-      it('Should return 0% when catch error', () => {
-        component.setData({
-          totalVotes: null,
-          option1: null
-        })
-        const result = component.vm.percentual(component.vm.option1)
-        expect(result).toBe("0%");
-      })
-    })
-  })
+        it("Should return 0% when catch error", () => {
+          component.setData({
+            totalVotes: null,
+            option1: null,
+          });
+          const result = component.vm.percentual(component.vm.option1);
+          expect(result).toBe("0%");
+        });
+    });
+
+    describe("loadPokemon", () => {
+      it("should call pokemon api and get a random pokemon image", async () => {
+        //When
+        await component.vm.loadPokemon();
+
+        //Then
+        expect(component.vm.pokemonImage).toBe("pokemon_image");
+      });
+    });
+  });
 
   describe("computed", () => {
     let component = shallowMount(Votacao);
@@ -93,28 +114,33 @@ describe("Votacao", () => {
           totalVotes: 0,
           option1: {
             votes: 5,
-            image: "xaéxaé"
+            image: "xaéxaé",
           },
           option2: {
-            votes: 2
+            votes: 2,
           },
           option3: {
-            votes: 3
-          }
-        })
+            votes: 3,
+          },
+        });
 
         // Then
-        const expected = { "code": "1", "image": "xaéxaé", "name": "Playstation 4", "votes": 5 }
+        const expected = {
+          code: "1",
+          image: "xaéxaé",
+          name: "Playstation 4",
+          votes: 5,
+        };
         expect(component.vm.winner).toStrictEqual(expected);
       });
     });
-  })
+  });
 
   describe("watch", () => {
     //GIVEN
     let component = shallowMount(Votacao);
 
-    describe("totalVotes", () => {
+    describe("MH - totalVotes", () => {
       it("should not close voting when totalVotes is still below 20", async () => {
         //WHEN
         component.setData({
@@ -149,7 +175,7 @@ describe("Votacao", () => {
 
     it("should display total votes", async () => {
       // When
-      component.get(".item-button").trigger("click")
+      component.get(".item-button").trigger("click");
       await component.vm.$nextTick;
       // Then
       expect(component.get(".result").text()).toBe("Total de votos: 1");

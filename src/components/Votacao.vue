@@ -31,13 +31,16 @@
       @voted="vote"
     ></opcao-votacao>
     <div class="result item-percentual">
-      <h1 v-if="!openVoting">Ganhador: {{ winner.name }}</h1>
+      <h1 v-if="!openVoting">
+        <img :src="pokemonImage" alt="" /> Ganhador: {{ winner.name }}
+      </h1>
       <h3>Total de votos: {{ totalVotes }}</h3>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import OpcaoVotacao from "./OpcaoVotacao";
 
 const MAX_VOTES = 20;
@@ -71,11 +74,17 @@ export default {
         votes: 0,
       },
       openVoting: true,
+      pokemonImage: null,
     };
   },
   watch: {
-    totalVotes(newTotalVotes) {
-      if (newTotalVotes >= MAX_VOTES) this.openVoting = false;
+    totalVotes() {
+      if (this.totalVotes >= MAX_VOTES) this.openVoting = false;
+    },
+    openVoting() {
+      if (!this.openVoting) {
+        this.loadPokemon();
+      }
     },
   },
   computed: {
@@ -104,8 +113,15 @@ export default {
       } catch (err) {
         return "0%";
       }
-    }
-  }
+    },
+    async loadPokemon() {
+      let pokemonId = Math.floor(Math.random() * (50 - 1)) + 1;
+      let pokemonResponse = await axios.get(
+        `https://pokeapi.co/api/v2/pokemon/${pokemonId}`
+      );
+      this.pokemonImage = pokemonResponse.data.sprites.front_default;
+    },
+  },
 };
 </script>
 
